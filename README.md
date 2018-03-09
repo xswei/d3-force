@@ -141,7 +141,7 @@ simulation.force("charge", null);
 
 ### Forces
 
-A *force* is simply a function that modifies nodes’ positions or velocities; in this context, a *force* can apply a classical physical force such as electrical charge or gravity, or it can resolve a geometric constraint, such as keeping nodes within a bounding box or keeping linked nodes a fixed distance apart. For example, a simple positioning force that moves nodes towards the origin ⟨0,0⟩ might be implemented as:
+*force* 是一个用以修改节点位置和速度的函数；在这种情况下，*force* 可以用来模拟电荷或重力之类的经典物理力学，也可以用来解决几何约束，例如将节点保持在边界框内或者保持节点之间的相对距离。例如将节点移动到原点 ⟨0,0⟩ 的简单力学模型可以实现如下:
 
 ```js
 function force(alpha) {
@@ -153,9 +153,9 @@ function force(alpha) {
 }
 ```
 
-Forces typically read the node’s current position ⟨*x*,*y*⟩ and then add to (or subtract from) the node’s velocity ⟨*vx*,*vy*⟩. However, forces may also “peek ahead” to the anticipated next position of the node, ⟨*x* + *vx*,*y* + *vy*⟩; this is necessary for resolving geometric constraints through [iterative relaxation](https://en.wikipedia.org/wiki/Relaxation_\(iterative_method\)). Forces may also modify the position directly, which is sometimes useful to avoid adding energy to the simulation, such as when recentering the simulation in the viewport.
+力学模型通常读取节点的当前位置 ⟨*x*,*y*⟩ 然后修改节点的速度 ⟨*vx*,*vy*⟩。但是力学图也能预测到节点的下一个位置  ⟨*x* + *vx*,*y* + *vy*⟩；这对于通过 [iterative relaxation(迭代松弛)](https://en.wikipedia.org/wiki/Relaxation_\(iterative_method\)) 来解决几何约束是必需的。力学模型也可以直接修改节点的位置，有时可以通过直接修改节点位置来避免向仿真中添加能量，比如在视口中重新进行仿真。
 
-Simulations typically compose multiple forces as desired. This module provides several for your enjoyment:
+仿真通常需要多个力学模型的组合，下面是内置的几种力学模型:
 
 * [Centering](#centering)
 * [Collision](#collision)
@@ -171,7 +171,7 @@ Applies this force, optionally observing the specified *alpha*. Typically, the f
 
 <a name="force_initialize" href="#force_initialize">#</a> <i>force</i>.<b>initialize</b>(<i>nodes</i>) [<>](https://github.com/d3/d3-force/blob/master/src/simulation.js#L71 "Source")
 
-Assigns the array of *nodes* to this force. This method is called when a force is bound to a simulation via [*simulation*.force](#simulation_force) and when the simulation’s nodes change via [*simulation*.nodes](#simulation_nodes). A force may perform necessary work during initialization, such as evaluating per-node parameters, to avoid repeatedly performing work during each application of the force.
+将 *nodes* 数组分配给此力。这个方法在将力通过 [*simulation*.force](#simulation_force) 添加到仿真中并且通过 [*simulation*.nodes](#simulation_nodes) 指定节点数组时被调用。可以在初始化阶段执行必要的工作，要避免在每次添加力模型时执行重复的工作。
 
 #### Centering
 
