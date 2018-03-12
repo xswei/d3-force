@@ -175,19 +175,19 @@ Applies this force, optionally observing the specified *alpha*. Typically, the f
 
 #### Centering
 
-The centering force translates nodes uniformly so that the mean position of all nodes (the center of mass if all nodes have equal weight) is at the given position ⟨[*x*](#center_x),[*y*](#center_y)⟩. This force modifies the positions of nodes on each application; it does not modify velocities, as doing so would typically cause the nodes to overshoot and oscillate around the desired center. This force helps keeps nodes in the center of the viewport, and unlike the [positioning force](#positioning), it does not distort their relative positions.
+`center` force (中心力) 可以将所有的节点的中心一致的向指定的位置 ⟨[*x*](#center_x),[*y*](#center_y)⟩ 移动。这种力强制修改每个节点的位置，但是不会修改速度，因为修改速度会造成节点在期望的位置附近抖动。这种力可以辅助保持所有的节点在视口中心，与 [positioning force](#positioning) 不同的是它不会修改节点之间的相对位置。
 
 <a name="forceCenter" href="#forceCenter">#</a> d3.<b>forceCenter</b>([<i>x</i>, <i>y</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/center.js#L1 "Source")
 
-Creates a new centering force with the specified [*x*-](#center_x) and [*y*-](#center_y) coordinates. If *x* and *y* are not specified, they default to ⟨0,0⟩.
+使用指定的 [*x*-](#center_x) 和 [*y*-](#center_y) 坐标创建一个新的中心力模型。如果 *x* 和 *y* 没有指定则默认为 ⟨0,0⟩.
 
 <a name="center_x" href="#center_x">#</a> <i>center</i>.<b>x</b>([<i>x</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/center.js#L27 "Source")
 
-If *x* is specified, sets the *x*-coordinate of the centering position to the specified number and returns this force. If *x* is not specified, returns the current *x*-coordinate, which defaults to zero.
+如果指定了 *x* 则将中心力的中心店 *x* 坐标设置为指定的数值并返回力学模型。如果没有指定则返回当前的中心点 *x* 坐标，默认为 0.
 
 <a name="center_y" href="#center_y">#</a> <i>center</i>.<b>y</b>([<i>y</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/center.js#L31 "Source")
 
-If *y* is specified, sets the *y*-coordinate of the centering position to the specified number and returns this force. If *y* is not specified, returns the current *y*-coordinate, which defaults to zero.
+如果指定了 *y* 则将中心力的中心店 *y* 坐标设置为指定的数值并返回力学模型。如果没有指定则返回当前的中心点 *y* 坐标，默认为 0.
 
 #### Collision
 
