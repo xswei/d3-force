@@ -166,9 +166,7 @@ function force(alpha) {
 
 <a name="_force" href="#_force">#</a> <i>force</i>(<i>alpha</i>) [<>](https://github.com/d3/d3-force/blob/master/src/simulation.js#L44 "Source")
 
-应用此力，可以选择指定一个 *alpha* 值。通常情况下，
-
-Applies this force, optionally observing the specified *alpha*. Typically, the force is applied to the array of nodes previously passed to [*force*.initialize](#force_initialize), however, some forces may apply to a subset of nodes, or behave differently. For example, [d3.forceLink](#links) applies to the source and target of each link.
+应用此力模型，可以选择观测指定的 *alpha* 值。通常情况下，该力在节点数组被传递给 [*force*.initialize](#force_initialize) 之前被应用，但是某些力可能适用于节点自己或者有不同的行为，比如 [d3.forceLink](#links) 被应用于每个边的 `source` 和 `target`.
 
 <a name="force_initialize" href="#force_initialize">#</a> <i>force</i>.<b>initialize</b>(<i>nodes</i>) [<>](https://github.com/d3/d3-force/blob/master/src/simulation.js#L71 "Source")
 
@@ -209,7 +207,6 @@ function radius() {
 ```
 
 半径访问器为仿真中的每个节点调用并传递当前的节点 *node* 以及基于 0 的 *index*。其返回值在内部被保存，这样的话每个节点的半径仅在初始化以及使用新的半径访问器时才会被调用，而不是每次应用时候重新计算。
-
 
 <a name="collide_strength" href="#collide_strength">#</a> <i>collide</i>.<b>strength</b>([<i>strength</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/collide.js#L82 "Source")
 
@@ -327,17 +324,17 @@ function strength(link) {
 
 #### Many-Body
 
-The many-body (or *n*-body) force applies mutually amongst all [nodes](#simulation_nodes). It can be used to simulate gravity (attraction) if the [strength](#manyBody_strength) is positive, or electrostatic charge (repulsion) if the strength is negative. This implementation uses quadtrees and the [Barnes–Hut approximation](https://en.wikipedia.org/wiki/Barnes–Hut_simulation) to greatly improve performance; the accuracy can be customized using the [theta](#manyBody_theta) parameter.
+`many-body`(N-body问题，译为电荷力比较容易理解) 在所有的节点之间相互作用。如果 [strength](#manyBody_strength) 为正可以被用来模拟重力(吸引力)，如果强度为负可以用来模拟排斥力。这个力模型的实现采用四叉树以及 [Barnes–Hut approximation](https://en.wikipedia.org/wiki/Barnes–Hut_simulation) 大大提高了性能。精确度可以使用 [theta](#manyBody_theta) 参数自定义。
 
-Unlike links, which only affect two linked nodes, the charge force is global: every node affects every other node, even if they are on disconnected subgraphs.
+与弹簧力不同的是，弹簧力仅仅影响两端的节点，而电荷力是全局的: 每个节点都受到其他所有节点的影响，甚至他们处于不连通的子图。
 
 <a name="forceManyBody" href="#forceManyBody">#</a> d3.<b>forceManyBody</b>() [<>](https://github.com/d3/d3-force/blob/master/src/manyBody.js "Source")
 
-Creates a new many-body force with the default parameters.
+创建一个使用默认参数的电荷力模型。
 
 <a name="manyBody_strength" href="#manyBody_strength">#</a> <i>manyBody</i>.<b>strength</b>([<i>strength</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/manyBody.js#L97 "Source")
 
-If *strength* is specified, sets the strength accessor to the specified number or function, re-evaluates the strength accessor for each node, and returns this force. A positive value causes nodes to attract each other, similar to gravity, while a negative value causes nodes to repel each other, similar to electrostatic charge. If *strength* is not specified, returns the current strength accessor, which defaults to:
+如果指定了 *strength* 则将强度访问器设置为指定的数值或者方法，重新评估每个节点的强度访问器并返回此电荷力。若强度为正值则表示节点之间相互吸引，负值表示节点之间相互排斥。如果没有指定 *strength* 则返回当前的强度访问器，默认为:
 
 ```js
 function strength() {
@@ -345,35 +342,35 @@ function strength() {
 }
 ```
 
-The strength accessor is invoked for each [node](#simulation_nodes) in the simulation, being passed the *node* and its zero-based *index*. The resulting number is then stored internally, such that the strength of each node is only recomputed when the force is initialized or when this method is called with a new *strength*, and not on every application of the force.
+强度访问器会为仿真中的每个节点调用，并传递当前的节点 *node* 以及基于 0 的索引。返回值结果会在内部被存储，也就是只在初始化和设置新的 *strength* 的时候才会重新计算，而不是在每次应用力模型的时候重新计算。
 
 <a name="manyBody_theta" href="#manyBody_theta">#</a> <i>manyBody</i>.<b>theta</b>([<i>theta</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/manyBody.js#L109 "Source")
 
-If *theta* is specified, sets the Barnes–Hut approximation criterion to the specified number and returns this force. If *theta* is not specified, returns the current value, which defaults to 0.9.
+如果指定了 *theta* 则 Barnes–Hut 算法的临界阈值设置为指定的值并返回当前力模型。如果没有指定 *theta* 则返回当前的值，默认为 `0.9`.
 
-To accelerate computation, this force implements the [Barnes–Hut approximation](http://en.wikipedia.org/wiki/Barnes–Hut_simulation) which takes O(*n* log *n*) per application where *n* is the number of [nodes](#simulation_nodes). For each application, a [quadtree](https://github.com/d3/d3-quadtree) stores the current node positions; then for each node, the combined force of all other nodes on the given node is computed. For a cluster of nodes that is far away, the charge force can be approximated by treating the cluster as a single, larger node. The *theta* parameter determines the accuracy of the approximation: if the ratio *w* / *l* of the width *w* of the quadtree cell to the distance *l* from the node to the cell’s center of mass is less than *theta*, all nodes in the given cell are treated as a single node rather than individually.
+为了加快计算，这个力模型基于 [Barnes–Hut approximation](http://en.wikipedia.org/wiki/Barnes–Hut_simulation) 进行实现，其时间复杂度为 O(*n* log *n*)，其中 *n* 为 [nodes](#simulation_nodes) 个数。在每次应用中，[quadtree](https://github.com/d3/d3-quadtree) 存储当前节点的位置；然后对于每个节点，计算其受其他所有节点的合力。对于距离很远的节点群，可以通过聚类将其视为一个更大的节点来模拟电荷力。*theta* 参数决定了这种近似精度：如果比率 *w* / *l* (*w* 表示四叉树正方形的宽度，*l* 表示节点到正方形中心的距离) 小于 *theta* 则将该正方形内的所有节点视为一个单独的节点。
 
 <a name="manyBody_distanceMin" href="#manyBody_distanceMin">#</a> <i>manyBody</i>.<b>distanceMin</b>([<i>distance</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/manyBody.js#L101 "Source")
 
-If *distance* is specified, sets the minimum distance between nodes over which this force is considered. If *distance* is not specified, returns the current minimum distance, which defaults to 1. A minimum distance establishes an upper bound on the strength of the force between two nearby nodes, avoiding instability. In particular, it avoids an infinitely-strong force if two nodes are exactly coincident; in this case, the direction of the force is random.
+如果指定了 *distance* 则设置电荷力模型的最小节点间距参考距离。如果没有指定 *distance* 则返回当前默认的最小参考距离，默认为 1。最小间距在相邻的节点之间建立了一个强度上限以避免不稳定的情况。极端的情况是两个节点完全重叠，则它们之间的斥力可能无限大，此时力的方向是随机的，因此设置最小间距是必要的。
 
 <a name="manyBody_distanceMax" href="#manyBody_distanceMax">#</a> <i>manyBody</i>.<b>distanceMax</b>([<i>distance</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/manyBody.js#L105 "Source")
 
-If *distance* is specified, sets the maximum distance between nodes over which this force is considered. If *distance* is not specified, returns the current maximum distance, which defaults to infinity. Specifying a finite maximum distance improves performance and produces a more localized layout.
+如果指定了 *distance* 则将节点之间的最大距离设置为指定的值并返回当前力模型。如果没有指定 *distance* 则返回当前默认的最大距离，默认为无穷大。指定最大间距可以提高性能，有利于生成局部布局。
 
 #### Positioning
 
-The [*x*](#forceX)- and [*y*](#forceY)-positioning forces push nodes towards a desired position along the given dimension with a configurable strength. The [*radial*](#forceRadial) force is similar, except it pushes nodes towards the closest point on a given circle. The strength of the force is proportional to the one-dimensional distance between the node’s position and the target position. While these forces can be used to position individual nodes, they are intended primarily for global forces that apply to all (or most) nodes.
+[*x*](#forceX)- 和 [*y*](#forceY)-定位力模型可以将节点沿着指定的维度进行排列。与 [*radial*](#forceRadial) 力类似，只不过环形力的参考位置是一个闭合的环。力的强度与节点位置到目标位置的距离成正比。虽然这些里可以定位某个单个节点，但是主要用于适用于所有(或大多数)节点的全局力布局。
 
 <a name="forceX" href="#forceX">#</a> d3.<b>forceX</b>([<i>x</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/x.js "Source")
 
-Creates a new positioning force along the *x*-axis towards the given position [*x*](#x_x). If *x* is not specified, it defaults to 0.
+根据指定的 [*x*](#x_x) 创建一个沿着 *x*-轴 方向的新的定位力模型。如果 *x* 没有指定则默认为 0.
 
 <a name="x_strength" href="#x_strength">#</a> <i>x</i>.<b>strength</b>([<i>strength</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/x.js#L32 "Source")
 
-If *strength* is specified, sets the strength accessor to the specified number or function, re-evaluates the strength accessor for each node, and returns this force. The *strength* determines how much to increment the node’s *x*-velocity: ([*x*](#x_x) - *node*.x) × *strength*. For example, a value of 0.1 indicates that the node should move a tenth of the way from its current *x*-position to the target *x*-position with each application. Higher values moves nodes more quickly to the target position, often at the expense of other forces or constraints. A value outside the range [0,1] is not recommended.
+如果指定了 *strength* 则将强度访问器设置为指定的数值或者方法，强度访问器会为每个节点进行调用，并返回当前力模型。*strength* 决定了节点 *x*-速度的增量: ([*x*](#x_x) - *node*.x) × *strength*. 例如值为 0.1 时表示节点在每次应用时应该从当前 *x*-位置向目标 *x*-位置移动十分之一。值越大则移动的越快，但是会牺牲其他力模型或者约束。不建议使用 [0, 1] 之外的值。
 
-If *strength* is not specified, returns the current strength accessor, which defaults to:
+如果没有指定 *strength* 则返回当前的强度访问器，默认为:
 
 ```js
 function strength() {
@@ -381,11 +378,11 @@ function strength() {
 }
 ```
 
-The strength accessor is invoked for each [node](#simulation_nodes) in the simulation, being passed the *node* and its zero-based *index*. The resulting number is then stored internally, such that the strength of each node is only recomputed when the force is initialized or when this method is called with a new *strength*, and not on every application of the force.
+强度访问器会为仿真中的每个节点进行调用，并传递当前的节点 *node* 以及基于 0 的索引。其值会被存储在内部，也就是只在初始化或者修改 *strength* 时会重新计算，而不会在每次应用时都重新计算。
 
 <a name="x_x" href="#x_x">#</a> <i>x</i>.<b>x</b>([<i>x</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/x.js#L36 "Source")
 
-If *x* is specified, sets the *x*-coordinate accessor to the specified number or function, re-evaluates the *x*-accessor for each node, and returns this force. If *x* is not specified, returns the current *x*-accessor, which defaults to:
+如果指定了 *x* 则设置 *x*-坐标访问器为指定的数值或者方法，并重新计算每个节点的 *x*-访问器，并返回当前力模型。如果没有指定 *x* 则返回当前的 *x*-访问器，默认为:
 
 ```js
 function x() {
@@ -393,17 +390,17 @@ function x() {
 }
 ```
 
-The *x*-accessor is invoked for each [node](#simulation_nodes) in the simulation, being passed the *node* and its zero-based *index*. The resulting number is then stored internally, such that the target *x*-coordinate of each node is only recomputed when the force is initialized or when this method is called with a new *x*, and not on every application of the force.
+*x*-访问器会为仿真中的每个节点进行调用，并传递当前 *node* 以及基于 0 的索引。计算结果会被内部存储，只有在初始化或者重新设置 *x* 访问器时参会重新计算，避免在每次应用时都重新计算。
 
 <a name="forceY" href="#forceY">#</a> d3.<b>forceY</b>([<i>y</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/y.js "Source")
 
-Creates a new positioning force along the *y*-axis towards the given position [*y*](#y_y). If *y* is not specified, it defaults to 0.
+根据指定的 [*y*](#y_y) 创建一个沿着 *y*-轴 方向的新的定位力模型。如果 *y* 没有指定则默认为 0.
 
 <a name="y_strength" href="#y_strength">#</a> <i>y</i>.<b>strength</b>([<i>strength</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/y.js#L32 "Source")
 
-If *strength* is specified, sets the strength accessor to the specified number or function, re-evaluates the strength accessor for each node, and returns this force. The *strength* determines how much to increment the node’s *y*-velocity: ([*y*](#y_y) - *node*.y) × *strength*. For example, a value of 0.1 indicates that the node should move a tenth of the way from its current *y*-position to the target *y*-position with each application. Higher values moves nodes more quickly to the target position, often at the expense of other forces or constraints. A value outside the range [0,1] is not recommended.
+如果指定了 *strength* 则将强度访问器设置为指定的数值或者方法，强度访问器会为每个节点进行调用，并返回当前力模型。*strength* 决定了节点 *y*-速度的增量: ([*y*](#y_y) - *node*.y) x *strength*. 例如值为 0.1 时表示节点在每次应用时应该从当前 *y*-位置向目标 *y*-位置移动十分之一。值越大则移动的越快，但是会牺牲其他力模型或者约束。不建议使用 [0, 1] 之外的值。
 
-If *strength* is not specified, returns the current strength accessor, which defaults to:
+如果没有指定 *strength* 则返回当前的强度访问器，默认为:
 
 ```js
 function strength() {
@@ -411,11 +408,11 @@ function strength() {
 }
 ```
 
-The strength accessor is invoked for each [node](#simulation_nodes) in the simulation, being passed the *node* and its zero-based *index*. The resulting number is then stored internally, such that the strength of each node is only recomputed when the force is initialized or when this method is called with a new *strength*, and not on every application of the force.
+强度访问器会为仿真中的每个节点进行调用，并传递当前的节点 *node* 以及基于 0 的索引。其值会被存储在内部，也就是只在初始化或者修改 *strength* 时会重新计算，而不会在每次应用时都重新计算。
 
 <a name="y_y" href="#y_y">#</a> <i>y</i>.<b>y</b>([<i>y</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/y.js#L36 "Source")
 
-If *y* is specified, sets the *y*-coordinate accessor to the specified number or function, re-evaluates the *y*-accessor for each node, and returns this force. If *y* is not specified, returns the current *y*-accessor, which defaults to:
+如果指定了 *y* 则设置 *y*-坐标访问器为指定的数值或者方法，并重新计算每个节点的 *y*-访问器，并返回当前力模型。如果没有指定 *y* 则返回当前的 *y*-访问器，默认为:
 
 ```js
 function y() {
@@ -423,19 +420,19 @@ function y() {
 }
 ```
 
-The *y*-accessor is invoked for each [node](#simulation_nodes) in the simulation, being passed the *node* and its zero-based *index*. The resulting number is then stored internally, such that the target *y*-coordinate of each node is only recomputed when the force is initialized or when this method is called with a new *y*, and not on every application of the force.
+*y*-访问器会为仿真中的每个节点进行调用，并传递当前 *node* 以及基于 0 的索引。计算结果会被内部存储，只有在初始化或者重新设置 *y* 访问器时参会重新计算，避免在每次应用时都重新计算。
 
 <a name="forceRadial" href="#forceRadial">#</a> d3.<b>forceRadial</b>(<i>radius</i>[, <i>x</i>][, <i>y</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/radial.js "Source")
 
 [<img alt="Radial Force" src="https://raw.githubusercontent.com/d3/d3-force/master/img/radial.png" width="420" height="219">](https://bl.ocks.org/mbostock/cd98bf52e9067e26945edd95e8cf6ef9)
 
-Creates a new positioning force towards a circle of the specified [*radius*](#radial_radius) centered at ⟨[*x*](#radial_x),[*y*](#radial_y)⟩. If *x* and *y* are not specified, they default to ⟨0,0⟩.
+创建一个沿着指定 [*radius*](#radial_radius)、圆心坐标在 ⟨[*x*](#radial_x),[*y*](#radial_y)⟩ 的圆环的环形布局。如果没有指定 *x* 和 *y* 则默认为 ⟨0,0⟩.
 
 <a name="radial_strength" href="#radial_strength">#</a> <i>radial</i>.<b>strength</b>([<i>strength</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/radial.js "Source")
 
-If *strength* is specified, sets the strength accessor to the specified number or function, re-evaluates the strength accessor for each node, and returns this force. The *strength* determines how much to increment the node’s *x*- and *y*-velocity. For example, a value of 0.1 indicates that the node should move a tenth of the way from its current position to the closest point on the circle with each application. Higher values moves nodes more quickly to the target position, often at the expense of other forces or constraints. A value outside the range [0,1] is not recommended.
+如果指定了 *strength* 则将强度访问函数设置为指定的数值或者方法，并重新评估每个节点的强度访问器，返回当前力模型。*strength* 决定了节点的  *x*- 和 *y*-速度的增量。例如 0.1 表示每次应用力模型时从当前为值向最近的圆环上位置移动十分之一。值越大移动的越快，但是会牺牲其他力模型或者约束，因此建议使用 [0, 1] 之间的值。
 
-If *strength* is not specified, returns the current strength accessor, which defaults to:
+如果没有指定 *strength* 则返回当前的强度访问器，默认为:
 
 ```js
 function strength() {
@@ -443,18 +440,18 @@ function strength() {
 }
 ```
 
-The strength accessor is invoked for each [node](#simulation_nodes) in the simulation, being passed the *node* and its zero-based *index*. The resulting number is then stored internally, such that the strength of each node is only recomputed when the force is initialized or when this method is called with a new *strength*, and not on every application of the force.
+强度访问器会为仿真中的每个节点进行调用，并传递当前节点 *node* 以及基于 0 的索引。计算结果会被内部存储，只有在初始化或者重新设置新的强度访问器时才会重新评估，避免在每次应用力模型时候重复计算。
 
 <a name="radial_radius" href="#radial_radius">#</a> <i>radial</i>.<b>radius</b>([<i>radius</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/radial.js "Source")
 
-If *radius* is specified, sets the circle *radius* to the specified number or function, re-evaluates the *radius* accessor for each node, and returns this force. If *radius* is not specified, returns the current *radius* accessor.
+如果指定了 *radius* 则将圆环的 *radius* 设置为指定的数值或者函数，并重新评估 *radius* 访问器，返回当前力模型。如果没有指定 *radius* 则返回当前的 *radius* 访问器。
 
-The *radius* accessor is invoked for each [node](#simulation_nodes) in the simulation, being passed the *node* and its zero-based *index*. The resulting number is then stored internally, such that the target radius of each node is only recomputed when the force is initialized or when this method is called with a new *radius*, and not on every application of the force.
+*radius* 访问器会为仿真中的每个节点进行调用，并传递当前的节点 *node* 以及基于 0 的索引。计算结果会被内部存储，只有在初始化或者重新设置新的 *radius* 时参会重新评估，以避免在每次应用时都重新计算。
 
 <a name="radial_x" href="#radial_x">#</a> <i>radial</i>.<b>x</b>([<i>x</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/radial.js "Source")
 
-If *x* is specified, sets the *x*-coordinate of the circle center to the specified number and returns this force. If *x* is not specified, returns the current *x*-coordinate of the center, which defaults to zero.
+如果指定了 *x* 则将圆环的 *x*-坐标设置为指定的数值并返回当前力模型。如果没有指定则返回当前 *x*-坐标，默认为 0。
 
 <a name="radial_y" href="#radial_y">#</a> <i>radial</i>.<b>y</b>([<i>y</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/radial.js "Source")
 
-If *y* is specified, sets the *y*-coordinate of the circle center to the specified number and returns this force. If *y* is not specified, returns the current *y*-coordinate of the center, which defaults to zero.
+如果指定了 *y* 则将圆环的 *y*-坐标设置为指定的数值并返回当前力模型。如果没有指定则返回当前 *y*-坐标，默认为 0。
