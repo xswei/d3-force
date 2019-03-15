@@ -14,11 +14,11 @@
 
 [<img alt="Force-Directed Lattice" src="https://raw.githubusercontent.com/d3/d3-force/master/img/lattice.png" width="480" height="250">](http://bl.ocks.org/mbostock/1b64ec067fcfc51e7471d944f51f1611)
 
-用本模块，为一组 [nodes](#simulation_nodes) 创建一个 [simulation(仿真)](#simulation)，并组合需要的 [forces(力模型)](#simulation_force)。然后 [listen(监听)](#simulation_on) `tick` 事件来不断更新图形系统，比如 Canvas 或 SVG.
+用本模块，为一组 [nodes](#simulation_nodes) 创建一个 [simulation(仿真)](#simulation)，并组合需要的 [forces(力模型)](#simulation_force)。然后 [listen(监听)](#simulation_on) `tick` 事件来不断更新图形系统，比如 `Canvas` 或 `SVG`.
 
 ## Installing
 
-NPM 安装: `npm install d3-force`. 也可以下载 [latest release](https://github.com/d3/d3-force/releases/latest). 此外还可以直接从 [d3js.org](https://d3js.org) 以 [standalone library](https://d3js.org/d3-force.v1.min.js) 或作为 [D3 4.0](https://github.com/d3/d3) 的一部分直接载入. 支持 AMD, CommonJS 以及最基本的标签引入形式，如果使用标签引入形式则会暴露全局 `d3_force` 变量:
+NPM 安装: `npm install d3-force`. 也可以下载 [latest release](https://github.com/d3/d3-force/releases/latest). 此外还可以直接从 [d3js.org](https://d3js.org) 以 [standalone library(标准库)](https://d3js.org/d3-force.v1.min.js) 或作为 [D3 4.0](https://github.com/d3/d3) 的一部分直接载入. 支持 `AMD`, `CommonJS` 以及最基本的标签引入形式，如果使用标签引入则会暴露全局 `d3` 变量:
 
 ```html
 <script src="https://d3js.org/d3-collection.v1.min.js"></script>
@@ -33,7 +33,7 @@ var simulation = d3.forceSimulation(nodes);
 </script>
 ```
 
-[在浏览器中测试 d3-force.](https://tonicdev.com/npm/d3-force)
+[在浏览器中测试 `d3-force`](https://tonicdev.com/npm/d3-force)
 
 ## API Reference
 
@@ -45,7 +45,7 @@ var simulation = d3.forceSimulation(nodes);
 
 <a name="simulation_restart" href="#simulation_restart">#</a> <i>simulation</i>.<b>restart</b>() [<>](https://github.com/d3/d3-force/blob/master/src/simulation.js#L80 "Source")
 
-重新调用仿真的定时器并且返回仿真。与 [*simulation*.alphaTarget](#simulation_alphaTarget) 或 [*simulation*.alpha](#simulation_alpha) 结合使用，这个方法可以再次激活仿真，在有些交互比如拖拽节点或者在使用 [*simulation*.stop](#simulation_stop) 临时暂停仿真时候使用。
+重新调用仿真的定时器并且返回仿真。与 [*simulation*.alphaTarget](#simulation_alphaTarget) 或 [*simulation*.alpha](#simulation_alpha) 结合使用，这个方法可以再次激活仿真，在有些交互比如拖拽节点或者在使用 [*simulation*.stop](#simulation_stop) 临时暂停仿真时使用。
 
 <a name="simulation_stop" href="#simulation_stop">#</a> <i>simulation</i>.<b>stop</b>() [<>](https://github.com/d3/d3-force/blob/master/src/simulation.js#L84 "Source")
 
