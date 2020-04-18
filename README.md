@@ -1,12 +1,12 @@
 # d3-force
 
-这个模块实现了用以模拟粒子物理运动的 [velocity Verlet](https://en.wikipedia.org/wiki/Verlet_integration) 数值积分器。仿真的演化: 它假设任意单位时间步长 Δ*t* = 1，所有的粒子的单位质量常量 *m* = 1。作用在每个粒子上的合力 *F* 相当于在单位时间 Δ*t* 内的恒定加速度 *a*。并且可以简单的通过为每个粒子添加速度并计算粒子的位置来模拟仿真。
+这个模块实现了用以模拟粒子物理运动的 [velocity Verlet](https://en.wikipedia.org/wiki/Verlet_integration) 数值积分器。仿真思路如下: 它假设任意单位时间步长 Δ*t* = 1，所有的粒子的单位质量常量 *m* = 1。作用在每个粒子上的合力 *F* 相当于在单位时间 Δ*t* 内的恒定加速度 *a*。并且可以简单的通过为每个粒子添加速度并计算粒子的位置来模拟仿真。
 
 在信息可视化领域，物理仿真在研究 [networks](http://bl.ocks.org/mbostock/ad70335eeef6d167bc36fd3c04378048) 和 [hierarchies](http://bl.ocks.org/mbostock/95aa92e2f4e8345aaa55a4a94d41ce37) 时非常有用。
 
 [<img alt="Force Dragging III" src="https://raw.githubusercontent.com/d3/d3-force/master/img/graph.png" width="420" height="219">](http://bl.ocks.org/mbostock/ad70335eeef6d167bc36fd3c04378048)[<img alt="Force-Directed Tree" src="https://raw.githubusercontent.com/d3/d3-force/master/img/tree.png" width="420" height="219">](http://bl.ocks.org/mbostock/95aa92e2f4e8345aaa55a4a94d41ce37)
 
-你可以使用带有碰撞检测的圆形，比如 [bubble charts](http://www.nytimes.com/interactive/2012/09/06/us/politics/convention-word-counts.html) 或 [beeswarm plots](http://bl.ocks.org/mbostock/6526445e2b44303eebf21da3b6627320):
+你可以使用带有碰撞检测的圆盘，比如 [bubble charts](http://www.nytimes.com/interactive/2012/09/06/us/politics/convention-word-counts.html) 或 [beeswarm plots](http://bl.ocks.org/mbostock/6526445e2b44303eebf21da3b6627320):
 
 [<img alt="Collision Detection" src="https://raw.githubusercontent.com/d3/d3-force/master/img/collide.png" width="420" height="219">](http://bl.ocks.org/mbostock/31ce330646fa8bcb7289ff3b97aab3f5)[<img alt="Beeswarm" src="https://raw.githubusercontent.com/d3/d3-force/master/img/beeswarm.png" width="420" height="219">](http://bl.ocks.org/mbostock/6526445e2b44303eebf21da3b6627320)
 
@@ -14,11 +14,11 @@
 
 [<img alt="Force-Directed Lattice" src="https://raw.githubusercontent.com/d3/d3-force/master/img/lattice.png" width="480" height="250">](http://bl.ocks.org/mbostock/1b64ec067fcfc51e7471d944f51f1611)
 
-用本模块，为一组 [nodes](#simulation_nodes) 创建一个 [simulation(仿真)](#simulation)，并组合需要的 [forces(力模型)](#simulation_force)。然后 [listen(监听)](#simulation_on) `tick` 事件来不断更新图形系统，比如 `Canvas` 或 `SVG`.
+用本模块为一组 [nodes](#simulation_nodes) 创建一个 [simulation(仿真)](#simulation)，并组合需要的 [forces(力模型)](#simulation_force)。然后 [监听](#simulation_on) `tick` 事件来不断更新图形系统，比如 `Canvas` 或 `SVG`.
 
 ## Installing
 
-NPM 安装: `npm install d3-force`. 也可以下载 [latest release](https://github.com/d3/d3-force/releases/latest). 此外还可以直接从 [d3js.org](https://d3js.org) 以 [standalone library(标准库)](https://d3js.org/d3-force.v1.min.js) 或作为 [D3 4.0](https://github.com/d3/d3) 的一部分直接载入. 支持 `AMD`, `CommonJS` 以及最基本的标签引入形式，如果使用标签引入则会暴露全局 `d3` 变量:
+NPM 安装: `npm install d3-force`。 也可以下载 [最新发行版](https://github.com/d3/d3-force/releases/latest). 此外还可以直接从 [d3js.org](https://d3js.org) 以 [标准库](https://d3js.org/d3-force.v1.min.js) 或作为 [D3 4.0](https://github.com/d3/d3) 的一部分直接载入. 支持 `AMD`, `CommonJS` 以及最基本的标签引入形式，如果使用标签引入则会暴露全局 `d3` 变量:
 
 ```html
 <script src="https://d3js.org/d3-collection.v1.min.js"></script>
@@ -41,11 +41,11 @@ var simulation = d3.forceSimulation(nodes);
 
 <a name="forceSimulation" href="#forceSimulation">#</a> d3.<b>forceSimulation</b>([<i>nodes</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/simulation.js "Source")
 
-使用指定的 [*nodes*](#simulation_nodes) 创建一个新的没有任何 [forces(力学模型)](#simulation_force) 的仿真。如果没有指定 *nodes* 则默认为空数组。仿真会自动 [starts](#simulation_restart)；使用 [*simulation*.on](#simulation_on) 来监听仿真运行过程中的 `tick` 事件。如果你想手动运行仿真，则需要调用 [*simulation*.stop](#simulation_stop) 然后根据需求调用 [*simulation*.tick](#simulation_tick)。
+使用指定的 [*nodes*](#simulation_nodes) 创建一个新的没有任何 [forces(力模型)](#simulation_force) 的仿真。如果没有指定 *nodes* 则默认为空数组。仿真会自动 [starts(启动)](#simulation_restart)；使用 [*simulation*.on](#simulation_on) 来监听仿真运行过程中的 `tick` 事件。如果你想手动运行仿真，则需要调用 [*simulation*.stop](#simulation_stop) 然后根据需求调用 [*simulation*.tick](#simulation_tick)。
 
 <a name="simulation_restart" href="#simulation_restart">#</a> <i>simulation</i>.<b>restart</b>() [<>](https://github.com/d3/d3-force/blob/master/src/simulation.js#L80 "Source")
 
-重新调用仿真的定时器并且返回仿真。与 [*simulation*.alphaTarget](#simulation_alphaTarget) 或 [*simulation*.alpha](#simulation_alpha) 结合使用，这个方法可以再次激活仿真，在有些交互比如拖拽节点或者在使用 [*simulation*.stop](#simulation_stop) 临时暂停仿真时使用。
+重新启动仿真的内部定时器并且返回仿真。与 [*simulation*.alphaTarget](#simulation_alphaTarget) 或 [*simulation*.alpha](#simulation_alpha) 结合使用，这个方法可以在交互期间再次激活仿真，比如拖拽节点或者在使用 [*simulation*.stop](#simulation_stop) 临时暂停仿真后使用。
 
 <a name="simulation_stop" href="#simulation_stop">#</a> <i>simulation</i>.<b>stop</b>() [<>](https://github.com/d3/d3-force/blob/master/src/simulation.js#L84 "Source")
 
@@ -53,15 +53,18 @@ var simulation = d3.forceSimulation(nodes);
 
 <a name="simulation_tick" href="#simulation_tick">#</a> <i>simulation</i>.<b>tick</b>() [<>](https://github.com/d3/d3-force/blob/master/src/simulation.js#L38 "Source")
 
-通过 ([*alphaTarget*](#simulation_alphaTarget) - *alpha*) × [*alphaDecay*](#simulation_alphaDecay) 递增当前的 [*alpha*](#simulation_alpha) 值。然后调用每个注册的 [force](#simulation_force) 并传递新的 *alpha*。然后通过 *velocity* × [*velocityDecay*](#simulation_velocityDecay) 来递减每个节点的速度并调整节点的位置。
+按指定的迭代次数手动执行仿真，并返回仿真。如果没有指定 *iterations* 则默认为 1，也就是迭代一次(单步)。
 
-这个方法不会分发 [events](#simulation_on)，事件仅仅在 [creation](#forceSimulation) 仿真或者调用 [*simulation*.restart](#simulation_restart) 的时候才会被分发。从仿真开始到结束的 `tick` 次数为 ⌈*log*([*alphaMin*](#simulation_alphaMin)) / *log*(1 - [*alphaDecay*](#simulation_alphaDecay))⌉ 也就是默认为 300 次。
+对于每一次迭代，仿真都会通过 ([*alphaTarget*](#simulation_alphaTarget) - *alpha*) × [*alphaDecay*](#simulation_alphaDecay) 计算当前的 [*alpha*](#simulation_alpha) 值。然后调用注册的 [力模型](#simulation_force)，并传入当前新的 *alpha* 值；然后通过 *velocity* × [*velocityDecay*] 来递减每个节点的速度；最后
+最后根据速度计算出每个节点的位置。
 
-这个方法可以与 [*simulation*.stop](#simulation_stop) 结合使用来创建 [static force layout(静态力学布局)](https://bl.ocks.org/mbostock/1667139)。对于大规模图而言静态布局应该 [in a web worker(在worker)](https://bl.ocks.org/mbostock/01ab2e85e8727d6529d20391c0fd9a16) 中计算以避免阻塞 UI 进程。
+这个方法不会派发 [events](#simulation_on)；事件仅仅在创建仿真自动启动或者使用 [*simulation*.restart](#simulation_restart) 时通过内部的定时器触发。自然迭代次数为 ⌈*log*([*alphaMin*](#simulation_alphaMin)) / *log*(1 - [*alphaDecay*](#simulation_alphaDecay))⌉ 也就是默认为 300 次。
+
+这个方法可以与 [*simulation*.stop](#simulation_stop) 结合使用计算一个 [static force layout(静态力导向布局)](https://bl.ocks.org/mbostock/1667139)。对于规模比较大的图，静态布局应该使用 [worker](https://bl.ocks.org/mbostock/01ab2e85e8727d6529d20391c0fd9a16) 计算避免阻塞用户界面。
 
 <a name="simulation_nodes" href="#simulation_nodes">#</a> <i>simulation</i>.<b>nodes</b>([<i>nodes</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/simulation.js#L88 "Source")
 
-如果指定了 *nodes* 则将仿真的节点设置为指定的对象数组，并根据需要创建它们的位置和速度，然后 [re-initializes(重新初始化)](#force_initialize) 并且绑定 [forces(力模型)](#simulation_force) 返回当前仿真。如果没有指定 *nodes* 则返回当前仿真的节点数组。
+如果指定了 *nodes* 则将仿真的节点设置为指定的对象数组，并根据需要创建它们的位置和速度，然后 [重新初始化](#force_initialize) 绑定的 [力模型](#simulation_force)，并返回当前仿真。如果没有指定 *nodes* 则返回当前仿真的节点数组。
 
 每个 *node* 必须是一个对象类型，下面的几个属性将会被仿真系统添加:
 
@@ -71,7 +74,7 @@ var simulation = d3.forceSimulation(nodes);
 * `vx` - 节点当前的 *x*-方向速度
 * `vy` - 节点当前的 *y*-方向速度
 
-位置 ⟨*x*,*y*⟩ 以及速度 ⟨*vx*,*vy*⟩ 随后可能被仿真中的 [forces](#forces) 修改. 如果 *vx* 或 *vy* 为 NaN, 则速度会被初始化为 ⟨0,0⟩. 如果 *x* 或 *y* 为 NaN, 则位置会按照 [phyllotaxis arrangement(布局算法)](http://bl.ocks.org/mbostock/11478058) 被初始化, 这样初始化布局是为了能使得节点在原点周围均匀分布。
+位置 ⟨*x*,*y*⟩ 以及速度 ⟨*vx*,*vy*⟩ 随后可能被仿真中的 [力模型](#forces) 修改. 如果 *vx* 或 *vy* 为 NaN, 则速度会被初始化为 ⟨0,0⟩. 如果 *x* 或 *y* 为 NaN, 则位置会按照 [phyllotaxis arrangement](http://bl.ocks.org/mbostock/11478058) 被初始化, 这样初始化布局是为了能使得节点在原点周围均匀分布。
 
 如果想要某个节点固定在一个位置，可以指定以下两个额外的属性:
 
@@ -94,7 +97,7 @@ var simulation = d3.forceSimulation(nodes);
 
 如果指定了 *decay* 则将当前的 [*alpha*](#simulation_alpha) 衰减系数设置为指定的值，要在[0, 1] 之间。如果没有指定 *decay* 则返回当前的 *alpha* 衰减系数，默认为 0.0228… = 1 - *pow*(0.001, 1 / 300)，其中 0.001 是默认的 [最小 *alpha*](#simulation_alphaMin).
 
-*alpha* 衰减系数定义了当前的 *alpha* 值向 [target *alpha*](#simulation_alphaTarget) 迭代快慢。默认的目标 *alpha* 为 0 因此从布局形式上可以认为衰减系数决定了布局冷却的快慢。衰减系数越大，布局冷却的越快，但是衰减系数大的话会引起迭代次数不够充分，导致效果不够好。衰减系数越小，迭代次数越多，最终的布局效果越好。如果想要布局永远停不下来则可以将衰减系数设置为 0；也可以设置 [target *alpha*](#simulation_alphaTarget) 大于 [minimum *alpha*](#simulation_alphaMin) 达到相同的效果。
+*alpha* 衰减系数定义了当前的 *alpha* 值向 [target *alpha*](#simulation_alphaTarget) 迭代的快慢。默认的目标 *alpha* 为 0 因此从布局形式上可以认为衰减系数决定了布局冷却的快慢。衰减系数越大，布局冷却的越快，但是衰减系数大的话会引起迭代次数不够充分，导致效果不够好。衰减系数越小，迭代次数越多，最终的布局效果越好。如果想要布局永远停不下来则可以将衰减系数设置为 0；也可以设置 [target *alpha*](#simulation_alphaTarget) 大于 [minimum *alpha*](#simulation_alphaMin) 达到相同的效果。
 
 <a name="simulation_alphaTarget" href="#simulation_alphaTarget">#</a> <i>simulation</i>.<b>alphaTarget</b>([<i>target</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/simulation.js#L104 "Source")
 
@@ -106,7 +109,7 @@ var simulation = d3.forceSimulation(nodes);
 
 <a name="simulation_force" href="#simulation_force">#</a> <i>simulation</i>.<b>force</b>(<i>name</i>[, <i>force</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/simulation.js#L112 "Source")
 
-如果指定了 *force* 则表示为仿真添加指定 *name* 的 [force(力学模型)](#forces) 并返回仿真。如果没有指定 *force* 则返回当前仿真的对应 *name* 的力模型，如果没有对应的 *name* 则返回 `undefined`. (默认情况下仿真没有任何力学模型，需要手动添加). 例如创建一个用来对图进行布局的仿真，可以如下:
+如果指定了 *force* 则表示为仿真添加指定 *name* 的 [力模型](#forces) 并返回仿真。如果没有指定 *force* 则返回当前仿真的对应 *name* 的力模型，如果没有对应的 *name* 则返回 `undefined`。 (默认情况下仿真没有任何力模型，需要手动添加)。例如创建一个用来对图进行布局的仿真，可以如下:
 
 ```js
 var simulation = d3.forceSimulation(nodes)
@@ -123,7 +126,7 @@ simulation.force("charge", null);
 
 <a name="simulation_find" href="#simulation_find">#</a> <i>simulation</i>.<b>find</b>(<i>x</i>, <i>y</i>[, <i>radius</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/simulation.js#L116 "Source")
 
-返回距离 ⟨*x*,*y*⟩ 位置最近的节点，并可以指定搜索半径 *radius*. 如果没有指定 *radius* 则默认为无穷大。如果在指定的搜索区域内没有找到节点，则返回 `undefined`.
+返回距离 ⟨*x*,*y*⟩ 位置最近的节点，并可以指定搜索半径 *radius*。 如果没有指定 *radius* 则默认为无穷大。如果在指定的搜索区域内没有找到节点，则返回 `undefined`。
 
 <a name="simulation_on" href="#simulation_on">#</a> <i>simulation</i>.<b>on</b>(<i>typenames</i>, [<i>listener</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/simulation.js#L139 "Source")
 
@@ -131,16 +134,16 @@ simulation.force("charge", null);
 
 *typenames* 可以由多个由空格隔开的 *typename*。每个 *typename* 都由 *type* 和可选的 *name* 组成，用 (`.`) 连接。比如  `tick.foo` 和 `tick.bar`。也就是可以为同一种事件类型注册多个事件监听器。其中 *type* 必须为以下几种:
 
-* `tick` - 仿真内部定时器每次 `tick` 之后.
-* `end` - 当 *alpha* < [*alphaMin*](#simulation_alphaMin) 时仿真内部定时器停止.
+* `tick` - 仿真内部定时器每次 `tick` 之后。
+* `end` - 当 *alpha* < [*alphaMin*](#simulation_alphaMin) 时仿真内部定时器停止。
 
-需要注意的是，`tick` 事件在手动调用 [*simulation*.tick](#simulation_tick) 时不会执行。`tick` 事件只会被内部定时器调用用以模拟布局过程。如果需要个性化调整布局，应该在 [forces](#simulation_force) 中注册而不是在每次 `tick` 时修改节点位置。
+需要注意的是，`tick` 事件在手动调用 [*simulation*.tick](#simulation_tick) 时不会执行。`tick` 事件只会被内部定时器调用用以模拟布局过程。如果需要调整布局，应该在 [forces](#simulation_force) 中注册力模型而不是在每次 `tick` 时修改节点位置。
 
 参考 [*dispatch*.on](https://github.com/d3/d3-dispatch#dispatch_on) 获取更多详情。
 
 ### Forces
 
-*force* 是一个用以修改节点位置和速度的函数；在这种情况下，*force* 可以用来模拟电荷或重力之类的经典物理力学，也可以用来解决几何约束，例如将节点保持在边界框内或者保持节点之间的相对距离。例如将节点移动到原点 ⟨0,0⟩ 的简单力学模型可以实现如下:
+*force（力模型）* 是一个用以修改节点位置和速度的函数；在力模型上下文中，*force* 可以施加电荷或重力之类的经典物理力学，也可以用来解决几何约束，例如将节点保持在边界框内或者保持节点之间的相对距离。例如将节点移动到原点 ⟨0,0⟩ 的简单力学模型可以实现如下:
 
 ```js
 function force(alpha) {
@@ -150,23 +153,31 @@ function force(alpha) {
     node.vy -= node.y * k;
   }
 }
+
+// 只在初始化时被调用，可选的
+force.initialize = function (nodes) {
+  // do something
+}
+
+const simulation = d3.forceSimulation()
+  .force('myForce', force)
 ```
 
 力学模型通常读取节点的当前位置 ⟨*x*,*y*⟩ 然后修改节点的速度 ⟨*vx*,*vy*⟩。但是力学图也能预测到节点的下一个位置  ⟨*x* + *vx*,*y* + *vy*⟩；这对于通过 [iterative relaxation(迭代松弛)](https://en.wikipedia.org/wiki/Relaxation_\(iterative_method\)) 来解决几何约束是必需的。力学模型也可以直接修改节点的位置，有时可以通过直接修改节点位置来避免向仿真中添加能量，比如在视口中重新进行仿真。
 
 仿真通常需要多个力学模型的组合，下面是内置的几种力学模型:
 
-* [Centering](#centering)
-* [Collision](#collision)
-* [Links](#links)
-* [Many-Body](#many-body)
+* [Centering(向心力)](#centering)
+* [Collision(碰撞检测)](#collision)
+* [Links(弹簧力)](#links)
+* [Many-Body(电荷力)](#many-body)
 * [Positioning](#positioning)
 
 力模型可以选择通过 [*force*.initialize](#force_initialize) 来接收仿真的节点数组。
 
 <a name="_force" href="#_force">#</a> <i>force</i>(<i>alpha</i>) [<>](https://github.com/d3/d3-force/blob/master/src/simulation.js#L44 "Source")
 
-应用此力模型，可以选择观测指定的 *alpha* 值。通常情况下，该力在节点数组被传递给 [*force*.initialize](#force_initialize) 之前被应用，但是某些力可能适用于节点自己或者有不同的行为，比如 [d3.forceLink](#links) 被应用于每个边的 `source` 和 `target`.
+应用此力模型，可以选择观测指定的 *alpha* 值。通常情况下，该力在节点数组被传递给 [*force*.initialize](#force_initialize) 之前被应用，但是某些力可能适用于节点子集或者有不同的行为，比如 [d3.forceLink](#links) 被应用于每个边的 `source` 和 `target`.
 
 <a name="force_initialize" href="#force_initialize">#</a> <i>force</i>.<b>initialize</b>(<i>nodes</i>) [<>](https://github.com/d3/d3-force/blob/master/src/simulation.js#L71 "Source")
 
@@ -174,27 +185,27 @@ function force(alpha) {
 
 #### Centering
 
-`center` force (中心力) 可以将所有的节点的中心一致的向指定的位置 ⟨[*x*](#center_x),[*y*](#center_y)⟩ 移动。这种力强制修改每个节点的位置，但是不会修改速度，因为修改速度会造成节点在期望的位置附近抖动。这种力可以辅助保持所有的节点在视口中心，与 [positioning force](#positioning) 不同的是它不会修改节点之间的相对位置。
+`center` (向心力) 可以将所有的节点的中心统一整体的向指定的位置 ⟨[*x*](#center_x),[*y*](#center_y)⟩ 移动。这种力强制修改每个节点的位置，但是不会修改速度，因为修改速度会造成节点在期望的位置附近抖动。这种力可以辅助保持所有的节点在视口中心，与 [positioning force](#positioning) 不同的是它不会修改节点之间的相对位置。
 
 <a name="forceCenter" href="#forceCenter">#</a> d3.<b>forceCenter</b>([<i>x</i>, <i>y</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/center.js#L1 "Source")
 
-使用指定的 [*x*-](#center_x) 和 [*y*-](#center_y) 坐标创建一个新的中心力模型。如果 *x* 和 *y* 没有指定则默认为 ⟨0,0⟩.
+使用指定的 [*x*-](#center_x) 和 [*y*-](#center_y) 坐标创建一个新的向心力模型。如果 *x* 和 *y* 没有指定则默认为 ⟨0,0⟩.
 
 <a name="center_x" href="#center_x">#</a> <i>center</i>.<b>x</b>([<i>x</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/center.js#L27 "Source")
 
-如果指定了 *x* 则将中心力的中心店 *x* 坐标设置为指定的数值并返回力学模型。如果没有指定则返回当前的中心点 *x* 坐标，默认为 0.
+如果指定了 *x* 则将向心力的中心点 *x* 坐标设置为指定的数值并返回力学模型。如果没有指定则返回当前的中心点 *x* 坐标，默认为 0.
 
 <a name="center_y" href="#center_y">#</a> <i>center</i>.<b>y</b>([<i>y</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/center.js#L31 "Source")
 
-如果指定了 *y* 则将中心力的中心店 *y* 坐标设置为指定的数值并返回力学模型。如果没有指定则返回当前的中心点 *y* 坐标，默认为 0.
+如果指定了 *y* 则将向心力的中心点 *y* 坐标设置为指定的数值并返回力学模型。如果没有指定则返回当前的中心点 *y* 坐标，默认为 0.
 
 #### Collision
 
-`collision` 力模型将节点视为具有一定 [radius](#collide_radius) 的圆，而不是点，并且阻止节点之间的重叠。从形式上来说，假设节点 *a* 和节点 *b* 是两个独立的节点，则 *a* 和 *b* 之间最小距离为 *radius*(*a*) + *radius*(*b*)。为减少抖动，默认情况下，碰撞检测是一个可配置 [strength](#collide_strength) 和 [iteration count](#collide_iterations) 的软约束。
+`collision（碰撞力）` 将节点视为具有一定 [radius](#collide_radius) 的圆，而不是点，并且阻止节点之间的重叠。从形式上来说，假设节点 *a* 和节点 *b* 是两个独立的节点，则 *a* 和 *b* 之间最小距离为 *radius*(*a*) + *radius*(*b*)。为减少抖动，默认情况下，碰撞检测是一个可配置 [strength(强度)](#collide_strength) 和 [iteration count(迭代次数)](#collide_iterations) 的软约束。
 
 <a name="forceCollide" href="#forceCollide">#</a> d3.<b>forceCollide</b>([<i>radius</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/collide.js "Source")
 
-根据指定的 [*radius*](#collide_radius) 创建一个新的圆的碰撞检测。如果没有指定 *radius* 则默认所有的节点半径都为 1.
+根据指定的 [*radius*](#collide_radius) 创建一个新的圆形区域的碰撞检测。如果没有指定 *radius* 则默认所有的节点半径都为 1.
 
 <a name="collide_radius" href="#collide_radius">#</a> <i>collide</i>.<b>radius</b>([<i>radius</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/collide.js#L86 "Source")
 
@@ -212,7 +223,7 @@ function radius() {
 
 如果指定了 *strength* 则将碰撞强度设置为指定的数值，强度范围为 [0, 1]。并返回当前碰撞力模型。如果没有指定 *strength* 则返回当前的碰撞强度，默认为 `0.7`.
 
-重叠的节点通过迭代松弛来解决。对于每个节点，将确定在下一次 `tick` 时候重叠(使用预期位置 ⟨*x* + *vx*,*y* + *vy*⟩ )的其他节点。然后节点的速度会被修改以避免重叠。速度的变化会受 *strength* 的影响，这样仿真的重叠问题可以得到一个比较稳定的解。
+重叠的节点通过迭代松弛来解决。对于每个节点，将估算在下一次 `tick` 时候重叠(使用预期位置 ⟨*x* + *vx*,*y* + *vy*⟩ )的其他节点。然后节点的速度会被修改以避免重叠。速度的变化会受 *strength* 的影响，这样仿真的重叠问题可以得到一个比较稳定的解。
 
 <a name="collide_iterations" href="#collide_iterations">#</a> <i>collide</i>.<b>iterations</b>([<i>iterations</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/collide.js#L78 "Source")
 
@@ -220,7 +231,7 @@ function radius() {
 
 #### Links
 
-`link froce`(弹簧模型) 可以根据 [link distance](#link_distance) 将有关联的两个节点拉近或者推远。力的强度与被链接两个节点的距离成比例，类似弹簧力。
+`link froce(弹簧模型)` 可以根据 [link distance](#link_distance) 将有关联的两个节点拉近或者推远。力的强度与被链接两个节点的距离成比例，类似弹簧力。
 
 <a name="forceLink" href="#forceLink">#</a> d3.<b>forceLink</b>([<i>links</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/link.js "Source")
 
@@ -288,7 +299,7 @@ var links = [
 ];
 ```
 
-这个方法在使用 JSON 表示图数据时特别有用，因为 JSON 数据不允许引用。参考 [this example](http://bl.ocks.org/mbostock/f584aa36df54c451c94a9d0798caed35).
+这个方法在使用 `JSON` 表示图数据时特别有用，因为 JSON 数据不允许引用。参考 [this example](http://bl.ocks.org/mbostock/f584aa36df54c451c94a9d0798caed35).
 
 `id` 访问器会在力模型初始化时为每个节点调用，与修改 [nodes](#simulation_nodes) 或 [links](#link_links) 一样，并传递当前节点以及基于 0 的索引。
 
