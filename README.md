@@ -51,7 +51,7 @@ var simulation = d3.forceSimulation(nodes);
 
 暂停仿真内部的定时器并返回当前仿真。如果仿真内部定时器已经处于停止状态则什么都不做。这个方法在手动运行仿真时很有用，参考 [*simulation*.tick](#simulation_tick)。
 
-<a name="simulation_tick" href="#simulation_tick">#</a> <i>simulation</i>.<b>tick</b>() [<>](https://github.com/d3/d3-force/blob/master/src/simulation.js#L38 "Source")
+<a name="simulation_tick" href="#simulation_tick">#</a> <i>simulation</i>.<b>tick</b>([<i>iterations</i>]) [<>](https://github.com/d3/d3-force/blob/master/src/simulation.js#L38 "Source")
 
 按指定的迭代次数手动执行仿真，并返回仿真。如果没有指定 *iterations* 则默认为 1，也就是迭代一次(单步)。
 
